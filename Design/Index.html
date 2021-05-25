@@ -19,22 +19,22 @@
     <div class="row">
         <div class="col-3 ">
             <h6>Fecha de Producción</h6>
-            <input class="form-control " id="txtFecha" aria-describedby="emailHelp ">
+            <input type="input" class="form-control " id="txtFecha" >
         </div>
 
         <div class="col-3">
             <h6>Categoría</h6>
-            <input class="form-control " id="txtCategoria" aria-describedby="emailHelp ">
+            <input type="input" class="form-control " id="txtCategoria" >
         </div>
 
         <div class="col-3 ">
             <h6>Talla</h6>
-            <input class="form-control " id="txtTalla" aria-describedby="emailHelp ">
+            <input class="form-control " id="txtTalla" >
         </div>
 
         <div class="col-3 ">
             <h6>Color</h6>
-            <input class="form-control " id="txtColor" aria-describedby="emailHelp ">
+            <input class="form-control " id="txtColor" >
         </div>
     </div>
     </div>
@@ -51,9 +51,9 @@
         </div>
         <div class="col-3 mt-1 btn-group-sm ">
             <br>
-            <button type="button " class="btn btn-success " id="btnGuardar" onclick="fnPostProduccion" data-bs-display="static " aria-expanded="false ">
+            <button type="button " class="btn btn-success " id="btnGuardar" onclick="fnPostGuardar();" >
             Aceptar
-          </button>
+            </button>
         </div>
     </div>
 
@@ -134,35 +134,38 @@
     }
     fnGetPedidos();
 
-    function fnPostProduccion() {
-  const cate=document.getElementById("txtCategoria");
-  const color=document.getElementById("txtColor");
-  const talla=document.getElementById("txtTalla");
-  const desc=document.getElementById("txtDescripcion");
-  const cant=document.getElementById("txtCantidad");
-  const fecha=document.getElementById("txtFecha");
+    function fnPostGuardar()
+    {
+        const colCategoria=document.getElementById("txtCategoria");
+        const colColor=document.getElementById("txtColor");
+        const colTalla=document.getElementById("txtTalla");
+        const colDescripcion=document.getElementById("txtDescripcion");
+        const colCantidad=document.getElementById("txtCantidad");
+        const colFecha =document.getElementById("txtFecha");
+        const datosenviar={
+            categoria:colCategoria.value,
+            fecha:colFecha.value,
+            talla:colTalla.value,
+            descripcion:colDescripcion.value,
+            cantidad:colCantidad.value,
+            color:colColor.value
+        }
 
-  console.log(cate.value);
+        console.log(colCategoria.value);
+        fetch('https://localhost:5001/api/guardarPedido',{
+            method:"POST",
+            headers:{
+                'Content-type':'application/json'
+            },
+            body:JSON.stringify(datosenviar)
 
-  const datosenviar={categoria:cate.value, color:color.value, 
-    talla:talla.value, descripcion:desc.value, cantidad:cant.value, fecha:fecha.value}
-
-
-  fetch('https://localhost:5001/api/guardarPedido', 
-  { method: "POST", 
-    headers: {
-      'Content-type': 'application/json'
-    } ,
-    body: JSON.stringify(datosenviar)
-  })
-  .then((response2)=> {
-      console.log("guardado :v")
-      fnGetProduccion();
-
-  })
-
-  
-}
+            
+        })
+        .then(retorned =>{
+            console.log("Pedido Guardado Con exito");
+            fnGetPedidos();
+        })
+    }
 
 </script>
 </body>
