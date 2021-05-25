@@ -18,6 +18,7 @@ namespace ShositoApp
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,7 +29,18 @@ namespace ShositoApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddDbContext<ShositoAppContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("ShositoDbConnection")));
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    builder =>
+                        {
+                        builder.WithOrigins("*")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                        });
+            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -49,6 +61,8 @@ namespace ShositoApp
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 
